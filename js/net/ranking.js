@@ -73,7 +73,8 @@ G.Ranking = (() => {
    * entra en el ranking. En grupo cada uno pide el suyo y el invitado se lo
    * manda al anfitrión (coop.js), que es quien sube la marca.
    */
-  const SEAL_API = 'https://ice.pokesurvivor.com/v1/seal';
+  const localHost = typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname);
+  const SEAL_API = localHost ? 'http://localhost:8001/v1/seal' : 'https://ws.stpt2.qzz.io/v1/seal';
   /*
    * Las reglas aceptan un sello de hasta 90 s después de empezar (rt <= desde el
    * sello + 90 s). Antes se probaba 3 veces con 6 s de espera (unos 25 s): con el

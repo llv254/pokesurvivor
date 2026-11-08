@@ -38,9 +38,33 @@ G.LevelUp = (() => {
     return out;
   }
 
+  function megaCard(pl) {
+    const time = G.Game && G.Game.st ? G.Game.st.time : 0;
+    const forms = G.MEGA_FORMS && G.MEGA_FORMS[pl.dex];
+    if (time < 30 || pl.megaForm || !forms || !forms.length || Math.random() >= 0.5) return null;
+    const form = G.U.pick(forms);
+    const suffix = form.id.replace(/^mega-?/, '').toUpperCase();
+    const mon = G.T(pl.mon.name);
+    return {
+      w: 40, type: 'mega', key: 'mega:' + form.id,
+      icon: 'type:' + form.stats.types[0], color: '#ffd23f', tag: G.T('ÚNICA'),
+      title: form.id === 'primal' ? 'Primal ' + mon : 'Mega ' + mon + (suffix ? ' ' + suffix : ''),
+      desc: G.T('Nuevas estadísticas y tipos; al menos +20 % de ataque y +20 % de vida máxima hasta acabar la partida.'),
+      apply: p => {
+        if (!p.megaEvolve(form.id)) return;
+        G.FX.ring(p.x, p.y, 10, 180, '#ffd23f', 0.9, 7);
+        G.FX.burst(p.x, p.y - p.bodyH * 0.5, '#ffe14d', 48, 260);
+        G.Audio.sfx('legend');
+        if (G.Coop.active) G.Coop.mega(p, form.id);
+      }
+    };
+  }
+
   /** Construye el conjunto de cartas candidatas, con pesos. */
   function candidates(pl) {
     const out = [];
+    const mega = megaCard(pl);
+    if (mega) out.push(mega);
 
     // --- movimientos nuevos ---
     if (pl.slots.length < pl.maxMoves) {
@@ -131,8 +155,9 @@ G.LevelUp = (() => {
     const pool = candidates(pl);
     const picked = [];
     const used = new Set();
-    // Si hay una evolución lista, su carta dorada sale siempre.
-    const evo = pool.findIndex(c => c.type === 'evo');
+    // Las cartas únicas Mega y las evoluciones listas salen siempre.
+    let evo = pool.findIndex(c => c.type === 'mega');
+    if (evo < 0) evo = pool.findIndex(c => c.type === 'evo');
     if (evo >= 0) { const c = pool.splice(evo, 1)[0]; used.add(c.key); picked.push(c); }
 
     while (picked.length < n && pool.length) {

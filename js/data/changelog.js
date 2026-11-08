@@ -6,6 +6,10 @@
  * Cada línea en español y en inglés.
  */
 G.CHANGELOG = [
+  { d: '2026-11-08', title: ['¡Mega Evolución!', 'Mega Evolution!'], new: [
+    ['A partir del minuto 30, los Pokémon compatibles pueden encontrar una rara carta ÚNICA para Mega Evolucionar hasta acabar la partida. Cada forma tiene sus propios tipos, estadísticas y sprite; aumenta el ataque al menos un 20 % y la vida máxima un 20 %.',
+     'After minute 30, compatible Pokémon can find a rare UNIQUE card to Mega Evolve for the rest of the run. Each form has its own types, stats and sprite; attack increases by at least 20% and max HP by 20%.']
+  ]},
   { d: '2026-10-28', title: ['Cooperativo por servidor', 'Co-op through a server'], chg: [
     ['Cooperativo: la partida ya no depende de que los móviles y routers de los jugadores puedan conectarse entre sí. Los mensajes pasan por un servidor Node.js; las salas, invitaciones y cuentas siguen como antes. Hace falta iniciar sesión.',
      'Co-op no longer depends on players’ phones and routers being able to connect to each other. Messages go through a Node.js server; rooms, invitations and accounts stay as before. You need to be signed in.']

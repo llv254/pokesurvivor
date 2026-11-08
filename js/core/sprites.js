@@ -15,9 +15,10 @@ G.Sprites = (() => {
   const sheets = new Map();          // "dex/Anim[/s]" -> {img, ready, failed}
 
   function meta(dex) { return G.SPRITE_META[dex] || null; }
+  function formMeta(dex, form) { return form && G.MEGA_SPRITE_META[dex] && G.MEGA_SPRITE_META[dex][form] || meta(dex); }
 
   /** ¿Flota en su sprite? (tools/hover_flags.py) Pasa por encima de rocas y agua. */
-  function hovers(dex) { const m = meta(dex); return !!(m && m.hv); }
+  function hovers(dex, form = '') { const m = formMeta(dex, form); return !!(m && m.hv); }
 
   /**
    * Versión blanca de una imagen (para el destello al recibir un golpe).
@@ -41,15 +42,15 @@ G.Sprites = (() => {
   }
 
   /** ¿Tiene versión shiny? (assets/pokemon/{dex}/s/) */
-  function hasShiny(dex) { const m = meta(dex); return !!(m && m.sh); }
+  function hasShiny(dex, form = '') { const m = formMeta(dex, form); return !!(m && m.sh); }
 
   /** Animaciones disponibles para esa variante. */
   function has(m, anim, shiny) {
     return !!m.a[anim] && !(shiny && m.sm && m.sm.includes(anim));
   }
 
-  function animName(dex, anim, shiny = false) {
-    const m = meta(dex);
+  function animName(dex, anim, shiny = false, form = '') {
+    const m = formMeta(dex, form);
     if (!m) return null;
     shiny = shiny && !!m.sh;
     if (has(m, anim, shiny)) return anim;
@@ -57,10 +58,10 @@ G.Sprites = (() => {
   }
 
   /** Geometría de una animación (la shiny sólo difiere en casos raros). */
-  function animMeta(dex, anim, shiny = false) {
-    const m = meta(dex);
+  function animMeta(dex, anim, shiny = false, form = '') {
+    const m = formMeta(dex, form);
     if (!m) return null;
-    const name = animName(dex, anim, shiny);
+    const name = animName(dex, anim, shiny, form);
     if (shiny && m.sh && m.sa && m.sa[name]) return m.sa[name];
     return m.a[name] || null;
   }
@@ -80,12 +81,14 @@ G.Sprites = (() => {
   }
 
   /** @param skin  disfraz (core/skins.js): sus hojas, con el disfraz pintado, en k-{skin}/ */
-  function sheet(dex, anim, shiny = false, skin = '') {
-    const m = meta(dex);
+  function sheet(dex, anim, shiny = false, skin = '', form = '') {
+    const selected = form && G.MEGA_SPRITE_META[dex] && G.MEGA_SPRITE_META[dex][form];
+    const m = selected || meta(dex);
     shiny = shiny && !!(m && m.sh);
-    const name = animName(dex, anim, shiny);
+    const name = animName(dex, anim, shiny, selected ? form : '');
     if (!name) return null;
-    const k = dex + '/' + name + (shiny ? '/s' : '') + (skin ? '/k:' + skin : '');
+    const formKey = selected ? form : '';
+    const k = dex + '/' + formKey + '/' + name + (shiny ? '/s' : '') + (skin ? '/k:' + skin : '');
     let s = sheets.get(k);
     const now = Date.now();
     if (s) {
@@ -96,7 +99,7 @@ G.Sprites = (() => {
     }
     if (sheets.size >= MAX_SHEETS) evict(now);
     s = { ready: false, failed: false, img: new Image(), tries: 0, retryAt: 0, at: now,
-          src: `assets/pokemon/${dex}/${skin ? 'k-' + skin + '/' : ''}${shiny ? 's/' : ''}${name}.png` };
+          src: `assets/pokemon/${dex}/${skin ? 'k-' + skin + '/' : formKey ? 'f-' + formKey + '/' : ''}${shiny ? 's/' : ''}${name}.png` };
     s.img.onload = () => { s.ready = true; };
     s.img.onerror = () => { s.failed = true; s.retryAt = performance.now() + 1000 * Math.min(8, 2 ** s.tries++); };
     s.img.src = s.src;
@@ -107,10 +110,10 @@ G.Sprites = (() => {
   const ANIMS = ['Idle', 'Walk', 'Attack', 'Shoot', 'Charge', 'Hurt', 'Faint'];
 
   /** Precarga todas las animaciones de esos Pokémon (y las de su disfraz, si lo lleva). */
-  function preload(dexes, timeout = 8000, shiny = false, skin = '') {
+  function preload(dexes, timeout = 8000, shiny = false, skin = '', form = '') {
     const hs = [];
     for (const d of dexes) for (const a of ANIMS) {
-      const s = sheet(d, a, shiny); if (s) hs.push(s);
+      const s = sheet(d, a, shiny, '', form); if (s) hs.push(s);
       const ks = skin && G.Skins && G.Skins.get(skin, d) ? sheet(d, a, shiny, skin) : null; if (ks) hs.push(ks);
     }
     return new Promise(res => {
@@ -128,8 +131,8 @@ G.Sprites = (() => {
   }
 
   /** Radio de colisión aproximado a partir del tamaño del sprite. */
-  function bodyRadius(dex, scale = 1) {
-    const m = animMeta(dex, 'Idle');
+  function bodyRadius(dex, scale = 1, form = '') {
+    const m = animMeta(dex, 'Idle', false, form);
     const w = m ? m.w : 32;
     return G.U.clamp(w * 0.22, 5, 26) * PX * scale;
   }
@@ -146,23 +149,23 @@ G.Sprites = (() => {
    *     más golpes por ser grande.
    */
   const BIG_H = 36, BIG_K = 0.4, PLAYER_R = 18;
-  function playerScale(dex) {
-    const m = animMeta(dex, 'Idle');
+  function playerScale(dex, form = '') {
+    const m = animMeta(dex, 'Idle', false, form);
     const h = m ? Math.max(m.ay, m.w * 0.55) : 24;
     if (h <= BIG_H) return 1;
     return Math.round((BIG_H + (h - BIG_H) * BIG_K) / h * 16) / 16;
   }
-  function playerRadius(dex) { return Math.min(PLAYER_R, bodyRadius(dex, playerScale(dex))); }
+  function playerRadius(dex, form = '') { return Math.min(PLAYER_R, bodyRadius(dex, playerScale(dex), form)); }
 
   /** Alto visual aproximado (para barras de vida y números de daño). */
-  function bodyHeight(dex, scale = 1) {
-    const m = animMeta(dex, 'Idle');
+  function bodyHeight(dex, scale = 1, form = '') {
+    const m = animMeta(dex, 'Idle', false, form);
     return (m ? m.ay : 24) * PX * scale;
   }
 
   /** Sombra elíptica bajo los pies, tamaño según el ShadowSize de PMD. */
-  function drawShadow(ctx, dex, x, y, scale = 1) {
-    const m = meta(dex);
+  function drawShadow(ctx, dex, x, y, scale = 1, form = '') {
+    const m = formMeta(dex, form);
     const s = m ? m.s : 1;
     const rx = [5, 8, 12][G.U.clamp(s, 0, 2)] * PX * scale;
     ctx.fillStyle = 'rgba(0,0,0,.34)';
@@ -192,9 +195,10 @@ G.Sprites = (() => {
    *                     a la de fondo hasta que termina
    */
   class Animator {
-    constructor(dex, scale = 1, shiny = false) {
+    constructor(dex, scale = 1, shiny = false, form = '') {
       this.dex = dex;
-      this.shiny = shiny && hasShiny(dex);
+      this.form = form;
+      this.shiny = shiny && hasShiny(dex, form);
       this.scale = scale;
       this.base = 'Idle';
       this.cur = 'Idle';
@@ -228,7 +232,7 @@ G.Sprites = (() => {
 
     /** Progreso 0..1 de la animación actual. */
     progress() {
-      const m = animMeta(this.dex, this.cur, this.shiny);
+      const m = animMeta(this.dex, this.cur, this.shiny, this.form);
       if (!m) return 1;
       let total = 0, before = 0;
       for (let i = 0; i < m.n; i++) { if (i < this.frame) before += m.d[i]; total += m.d[i]; }
@@ -242,7 +246,7 @@ G.Sprites = (() => {
     }
 
     update(dt) {
-      const m = animMeta(this.dex, this.cur, this.shiny);
+      const m = animMeta(this.dex, this.cur, this.shiny, this.form);
       if (!m || this.done) return;
       this.t += dt * 60 * this.speed;
       while (this.t >= m.d[this.frame]) {
@@ -263,18 +267,22 @@ G.Sprites = (() => {
 
     /** Dibuja con los pies en (x, y). opts: { flash, alpha } */
     draw(ctx, x, y, opts = {}) {
-      let m = animMeta(this.dex, this.cur, this.shiny);
-      let s = sheet(this.dex, this.cur, this.shiny);
+      let m = animMeta(this.dex, this.cur, this.shiny, this.form);
+      let s = sheet(this.dex, this.cur, this.shiny, '', this.form);
       const k = PX * this.scale;
       // Disfraz: la hoja con el disfraz pintado (más grande: lleva margen para
       // el sombrero). Mientras carga, el Pokémon sin él.
-      const ks = this.skin && G.Skins && G.Skins.get(this.skin, this.dex) ? sheet(this.dex, this.cur, this.shiny, this.skin) : null;
+      const ks = !this.form && this.skin && G.Skins && G.Skins.get(this.skin, this.dex) ? sheet(this.dex, this.cur, this.shiny, this.skin) : null;
       let own = true;
       if (ks && ks.ready && m) { s = ks; m = padded(m); }
       else if (s && !s.ready) {
         // Mientras carga esta animación, enseña Idle si ya está.
-        const idle = sheet(this.dex, 'Idle', this.shiny);
-        if (idle && idle.ready) { s = idle; m = animMeta(this.dex, 'Idle', this.shiny); own = false; }
+        const idle = sheet(this.dex, 'Idle', this.shiny, '', this.form);
+        if (idle && idle.ready) { s = idle; m = animMeta(this.dex, 'Idle', this.shiny, this.form); own = false; }
+        else if (this.form) {
+          const base = sheet(this.dex, this.cur, this.shiny);
+          if (base && base.ready) { s = base; m = animMeta(this.dex, this.cur, this.shiny); }
+        }
       }
       const frame = own ? this.frame : 0;
       if (!m || !s || !s.ready) {

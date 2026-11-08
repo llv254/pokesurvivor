@@ -403,6 +403,9 @@ G.Coop = (() => {
           G.Combat.ghostCast(m.pl, ev[1], ev[2], ev[3], ev[4]);
           emit(['c', from, ev[1], ev[2], ev[3], ev[4]], from);
           break;
+        case 'mg':
+          if (m.pl.megaEvolve(ev[1])) emit(['mg', from, ev[1]], from);
+          break;
         case 'pb':
           G.World.breakAt(ev[1], ev[2]);
           emit(['pb', ev[1], ev[2]], from);
@@ -504,6 +507,7 @@ G.Coop = (() => {
                               friendly: false, color: '#ff7a9e', vis: G.VFX.forType(ev[8]), mtype: ev[8], cat: ev[9] });
         break;
       case 'c': { const m = mates.get(ev[1]); if (m) G.Combat.ghostCast(m.pl, ev[2], ev[3], ev[4], ev[5]); break; }
+      case 'mg': { const m = mates.get(ev[1]); if (m) m.pl.megaEvolve(ev[2]); break; }
       case 'item': api.item(ev[1]); break;
       case 'orb': if (typeof ev[1] === 'string') api.orb(ev[1]); break;
       case 'ob': if (typeof ev[1] === 'string') G.Orbs.nearBuff(ev[1], num(ev[2], 0, -1e6, 1e6), num(ev[3], 0, -1e6, 1e6)); break;
@@ -645,6 +649,12 @@ G.Coop = (() => {
     else { doneSeq = seenSeq; outEv.push(['lp']); flushClient(true); }
   }
 
+  function mega(pl, form) {
+    if (!active || pl !== local) return;
+    if (host) emit(['mg', me, form]);
+    else outEv.push(['mg', form]);
+  }
+
   /** Anfitrión: se acabó para todos. */
   function over(data) {
     emit(['ov', Object.assign({}, data, { sums: teamSums() })]);
@@ -655,7 +665,7 @@ G.Coop = (() => {
   return {
     ANIMS, COLORS, begin, end, leave, keeps, tick, players, puppets, xpFactor, scaleRate, scaleHp,
     cast, hit, status, hurtShown, enemyAdded, enemyGone, enemyShot, pickupAdded, pickupGone, say,
-    propBroken, collected, shinyCaught, orbUsed, levelStart, localPicked, over, holdStart, holdEnd,
+    propBroken, collected, shinyCaught, orbUsed, levelStart, localPicked, mega, over, holdStart, holdEnd,
     /** Anfitrión: evento para todos. Invitado: evento para el anfitrión. */
     broadcast(ev) { emit(ev); },
     toHost(ev) { if (active && !host) { outEv.push(ev); flushClient(true); } },

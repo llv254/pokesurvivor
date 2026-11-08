@@ -11,6 +11,8 @@ G.Player = class Player {
   constructor(mon, perks = {}, shiny = false) {
     this.mon = mon;
     this.dex = mon.dex;
+    this.megaForm = '';
+    this.megaHpMul = 1;
     this.shiny = shiny && G.Sprites.hasShiny(mon.dex);
     // Los grandes, algo más pequeños y con el choque de uno normal (ver sprites.js).
     this.scale = G.Sprites.playerScale(mon.dex);
@@ -89,6 +91,36 @@ G.Player = class Player {
     this.abil = G.AbilityFX.of(id, this.mon);
     if (this.abil.cdMul) this.cdMul *= this.abil.cdMul;
     if (this.abil.start) this.abil.start(this);
+  }
+
+  megaEvolve(id) {
+    const form = (G.MEGA_FORMS[this.dex] || []).find(x => x.id === id);
+    if (!form || this.megaForm || G.Game.st.time < 1800) return false;
+    const old = this.mon, next = Object.assign({}, old, form.stats, { dex: this.dex, nature: old.nature });
+    const nature = old.nature && G.NATURE_BY[old.nature];
+    if (nature) {
+      if (nature.up) next[nature.up] = form.stats[nature.up] * 1.1;
+      if (nature.down) next[nature.down] = form.stats[nature.down] * 0.9;
+      next.atk = Math.max(next.pa, next.sa);
+    }
+    const dir = this.anim.dir;
+    const hpBonus = Math.round(this.maxHp * 0.2);
+    this.maxHp += hpBonus;
+    this.hp = Math.min(this.maxHp, this.hp + hpBonus);
+    this.megaHpMul = 1.2;
+    this.baseAtk *= Math.max(1.2, next.atk / old.atk);
+    this.baseSpd *= next.spd / old.spd;
+    this.mon = next;
+    this.megaForm = id;
+    this.abil = G.AbilityFX.of(this.abilId, next);
+    this.scale = G.Sprites.playerScale(this.dex, id);
+    this.r = G.Sprites.playerRadius(this.dex, id);
+    this.bodyH = G.Sprites.bodyHeight(this.dex, this.scale, id);
+    this.anim = new G.Sprites.Animator(this.dex, this.scale, this.shiny, id);
+    this.anim.dir = dir;
+    this.anim.loop(this.walking ? 'Walk' : 'Idle');
+    G.Sprites.preload([this.dex], 8000, this.shiny, '', id);
+    return true;
   }
 
   /** Segundos que hay que estar junto a un compañero caído para levantarlo. */
@@ -244,7 +276,7 @@ G.Player = class Player {
     if (m.kind === 'trail') return;
     // No reinicies una animación que va por la mitad: se vería a tirones.
     if (this.anim.busy() && this.anim.progress() < 0.65) return;
-    const meta = G.Sprites.animMeta(this.dex, anim);
+    const meta = G.Sprites.animMeta(this.dex, anim, this.shiny, this.megaForm);
     const len = meta ? meta.d.reduce((a, b) => a + b, 0) / 60 : 0.4;
     const cd = Math.max(0.12, m.cd * this.cdMul);
     this.anim.play(anim, { speed: Math.max(1, len / (cd * 0.9)) });
@@ -324,7 +356,10 @@ G.Player = class Player {
     if (got >= 1) G.FX.dmgText(this.x, this.y - this.bodyH - 6, '+' + got, '#5fe08a');
   }
 
-  addMaxHp(amount) { this.maxHp += amount; this.hp += amount; }
+  addMaxHp(amount) {
+    amount *= this.megaHpMul || 1;
+    this.maxHp += amount; this.hp += amount;
+  }
 
   /** Devuelve cuántos niveles ha subido (pueden ser varios de golpe). */
   gainXp(amount) {
@@ -563,7 +598,7 @@ G.Player = class Player {
       ctx.beginPath(); ctx.ellipse(this.x, this.y, this.r * 1.5, this.r * 0.6, 0, 0, 6.2832); ctx.stroke();
       ctx.restore();
     }
-    G.Sprites.drawShadow(ctx, this.dex, this.x, this.y, this.scale);
+    G.Sprites.drawShadow(ctx, this.dex, this.x, this.y, this.scale, this.megaForm);
     // Poder de altar: aro de su color latiendo bajo los pies.
     if (this.power && !this.dead) {
       ctx.save();

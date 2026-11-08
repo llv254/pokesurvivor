@@ -11,9 +11,9 @@ G.FX = (() => {
   // Topes según la calidad (Ajustes → Gráficos): bajo, medio, alto.
   const CAP_PARTS = [350, 800, 1400], CAP_SPRITES = [110, 210, 320], CAP_TEXTS = [25, 45, 70], DENS = [0.35, 0.65, 1];
   const q = () => G.Settings.fx;
-  let parts = [], sprites = [], texts = [], rings = [], slashes = [], beams = [];
+  let parts = [], sprites = [], texts = [], rings = [], slashes = [], beams = [], transforms = [];
 
-  function clear() { parts = []; sprites = []; texts = []; rings = []; slashes = []; beams = []; }
+  function clear() { parts = []; sprites = []; texts = []; rings = []; slashes = []; beams = []; transforms = []; }
 
   const snap = v => Math.round(v / PX) * PX;
 
@@ -89,6 +89,7 @@ G.FX = (() => {
 
   function evolve(x, y, radius, height, color = '#ffd23f') {
     const cy = y - height * 0.5;
+    transforms.push({ x, y, r: radius, h: height, color, t: 0, life: 1.25, seed: Math.random() * 6.2832 });
     ring(x, y, radius * 0.35, radius * 5.2, color, 1.05, 6);
     ring(x, y, radius * 0.2, radius * 3.8, '#fff3ae', 0.72, 4);
     ring(x, cy, radius * 0.15, radius * 2.8, '#ffffff', 0.62, 3);
@@ -131,6 +132,10 @@ G.FX = (() => {
   // ---------------- actualización ----------------
 
   function update(dt) {
+    for (let i = transforms.length - 1; i >= 0; i--) {
+      transforms[i].t += dt;
+      if (transforms[i].t >= transforms[i].life) transforms.splice(i, 1);
+    }
     for (let i = parts.length - 1; i >= 0; i--) {
       const p = parts[i];
       p.t += dt;
@@ -243,7 +248,55 @@ G.FX = (() => {
     ctx.globalAlpha = 1;
   }
 
+  function drawTransform(ctx, e) {
+    const progress = e.t / e.life;
+    const fade = progress > 0.78 ? (1 - progress) / 0.22 : 1;
+    const cy = e.y - e.h * 0.52;
+    const pulse = 0.72 + Math.sin(e.t * 25) * 0.18;
+    ctx.save();
+    ctx.globalAlpha = step(fade * pulse);
+
+    for (let band = 0; band < 5; band++) {
+      const offset = (band - 2) * e.r * 0.72;
+      const drift = Math.sin(e.t * 8 + band * 1.7 + e.seed) * e.r * 0.16;
+      const top = e.y - e.h * (0.25 + 0.25 * ((band + 2) % 3));
+      const width = band === 2 ? PX * 2 : PX;
+      ctx.fillStyle = band % 2 ? '#fff3ae' : e.color;
+      for (let y = top; y < e.y + e.h * 0.12; y += PX * 3) {
+        if (((y / PX + band) | 0) % 3 === 0) continue;
+        ctx.fillRect(snap(e.x + offset + drift), snap(y), width, PX * 2);
+      }
+    }
+
+    for (let orbit = 0; orbit < 2; orbit++) {
+      const direction = orbit ? -1 : 1;
+      const phase = e.seed + direction * e.t * 7;
+      const rx = e.r * (1.55 + orbit * 0.48);
+      const ry = e.h * (0.19 + orbit * 0.05);
+      for (let i = 0; i < 32; i++) {
+        const angle = i / 32 * 6.2832 + phase;
+        const depth = 0.35 + (Math.sin(angle) + 1) * 0.32;
+        ctx.globalAlpha = step(fade * depth);
+        ctx.fillStyle = (i + orbit) % 4 ? e.color : '#ffffff';
+        const size = (i + orbit) % 5 === 0 ? PX * 2 : PX;
+        ctx.fillRect(snap(e.x + Math.cos(angle) * rx), snap(cy + Math.sin(angle) * ry), size, size);
+      }
+    }
+
+    const flash = Math.max(0, 1 - Math.abs(progress - 0.42) / 0.12);
+    if (flash) {
+      ctx.globalAlpha = flash * 0.8;
+      ctx.fillStyle = '#ffffff';
+      for (let i = -3; i <= 3; i++) {
+        const reach = e.h * (0.55 + flash * 0.45);
+        ctx.fillRect(snap(e.x + i * PX * 3), snap(cy - reach * 0.5), PX, snap(reach));
+      }
+    }
+    ctx.restore();
+  }
+
   function draw(ctx) {
+    for (const e of transforms) drawTransform(ctx, e);
     for (const b of beams) drawBeam(ctx, b);
     for (const s of slashes) drawSlash(ctx, s);
     for (const r of rings) drawRing(ctx, r);
@@ -281,5 +334,5 @@ G.FX = (() => {
   }
 
   return { clear, px, burst, spark, sp, twinkle, trail, dmgText, ring, evolve, slash, beam, update, draw,
-           get count() { return parts.length + sprites.length + texts.length; } };
+           get count() { return parts.length + sprites.length + texts.length + transforms.length; } };
 })();

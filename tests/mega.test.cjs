@@ -8,7 +8,7 @@ const data = { G: {} };
 new Function('G', source('js/data/mega.js'))(data.G);
 
 test('Mega cards follow the run threshold and can be selected only once', () => {
-  const game = { st: { time: 29 } };
+  const game = { st: { time: 0 } };
   const random = Object.create(Math);
   random.random = () => 0;
   const G = {
@@ -30,9 +30,9 @@ test('Mega cards follow the run threshold and can be selected only once', () => 
   };
 
   assert.equal(G.LevelUp.offer(pl).some(card => card.type === 'mega'), false);
-  game.st.time = 30;
+  game.st.time = 1;
   const card = G.LevelUp.offer(pl).find(choice => choice.type === 'mega');
-  assert.equal(card.tag, 'ÚNICA');
+  assert.equal(card.tag, 'LEGENDARY');
   card.apply(pl);
   assert.equal(pl.megaForm, 'mega-x');
   assert.equal(G.FX.count, 1);
@@ -49,7 +49,7 @@ test('Mega Evolution applies its form stats and HP bonus once, without changing 
   const G = {
     DEX_BY: { 6: base },
     MEGA_FORMS: data.G.MEGA_FORMS,
-    Game: { st: { time: 30 } },
+    Game: { st: { time: 1 } },
     Sprites: {
       playerScale: () => 1, playerRadius: () => 12, bodyHeight: () => 40, preload() {},
       Animator: class { constructor(dex, scale, shiny, form) { this.dex = dex; this.form = form; this.dir = 0; } loop(name) { this.animation = name; } }
@@ -100,9 +100,14 @@ test('Mega evolution effect creates layered rings, particles and sparkles', () =
   const G = {
     Sprites: { PX: 2 },
     Settings: { fx: 2 },
-    U: { rand: (min, max) => (min + max) / 2 }
+    U: { rand: (min, max) => (min + max) / 2, lerp: (a, b, t) => a + (b - a) * t },
+    Icons: { twinkle() {} }
   };
   new Function('G', source('js/entities/fx.js'))(G);
   G.FX.evolve(100, 120, 16, 40);
   assert.ok(G.FX.count >= 90);
+  const ctx = { globalAlpha: 1, fillRect() {}, save() {}, restore() {} };
+  G.FX.draw(ctx);
+  G.FX.update(1.3);
+  assert.equal(G.FX.count, 0);
 });

@@ -19,7 +19,7 @@ test('Mega cards follow the run threshold and can be selected only once', () => 
     Moves: { poolFor: () => [], evoInfo: () => null, nextUpText: () => null },
     Stats: { fit: () => 1, sideOf: () => 'physical', NAME: {} },
     Coop: { active: false },
-    FX: { ring() {}, burst() {} },
+    FX: { evolve() { this.count = (this.count || 0) + 1; } },
     Audio: { sfx() {} }
   };
   new Function('G', 'Math', source('js/systems/levelup.js'))(G, random);
@@ -35,6 +35,7 @@ test('Mega cards follow the run threshold and can be selected only once', () => 
   assert.equal(card.tag, 'ÚNICA');
   card.apply(pl);
   assert.equal(pl.megaForm, 'mega-x');
+  assert.equal(G.FX.count, 1);
 
   random.random = () => 0.51;
   assert.equal(G.LevelUp.offer(pl).some(card => card.type === 'mega'), false);
@@ -93,4 +94,15 @@ test('Mega sprite loader selects the offline form-specific animation path', () =
   assert.equal(mega.src, 'assets/pokemon/6/f-mega-x/Idle.png');
   assert.equal(base.src, 'assets/pokemon/6/Idle.png');
   assert.equal(Object.values(data.G.MEGA_FORMS).flat().length, 41);
+});
+
+test('Mega evolution effect creates layered rings, particles and sparkles', () => {
+  const G = {
+    Sprites: { PX: 2 },
+    Settings: { fx: 2 },
+    U: { rand: (min, max) => (min + max) / 2 }
+  };
+  new Function('G', source('js/entities/fx.js'))(G);
+  G.FX.evolve(100, 120, 16, 40);
+  assert.ok(G.FX.count >= 90);
 });

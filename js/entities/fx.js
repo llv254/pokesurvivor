@@ -87,6 +87,20 @@ G.FX = (() => {
     rings.push({ x, y, r0, r1, color, life, t: 0, width });
   }
 
+  function evolve(x, y, radius, height, color = '#ffd23f') {
+    const cy = y - height * 0.5;
+    ring(x, y, radius * 0.35, radius * 5.2, color, 1.05, 6);
+    ring(x, y, radius * 0.2, radius * 3.8, '#fff3ae', 0.72, 4);
+    ring(x, cy, radius * 0.15, radius * 2.8, '#ffffff', 0.62, 3);
+    burst(x, cy, color, 54, 250);
+    burst(x, cy, '#fff3ae', 24, 150);
+    for (let i = 0; i < 12; i++) {
+      const a = i / 12 * 6.2832;
+      const r = radius * (1.1 + (i % 3) * 0.35);
+      twinkle(x + Math.cos(a) * r, cy + Math.sin(a) * r * 0.8);
+    }
+  }
+
   /** Golpe cuerpo a cuerpo. fx: { pal, melee } (ver G.VFX.forMove). */
   function slash(x, y, angle, radius, arc, color, fx = {}) {
     const pal = fx.pal || 'normal';
@@ -266,6 +280,6 @@ G.FX = (() => {
     }
   }
 
-  return { clear, px, burst, spark, sp, twinkle, trail, dmgText, ring, slash, beam, update, draw,
+  return { clear, px, burst, spark, sp, twinkle, trail, dmgText, ring, evolve, slash, beam, update, draw,
            get count() { return parts.length + sprites.length + texts.length; } };
 })();

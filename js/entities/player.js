@@ -91,6 +91,39 @@ G.Player = class Player {
     if (this.abil.start) this.abil.start(this);
   }
 
+  /** Cambia de especie durante la run sin perder el progreso ni los movimientos. */
+  evolveTo(dex) {
+    const base = G.DEX_BY[dex];
+    if (!base || dex === this.dex) return false;
+    const old = this.mon;
+    const next = G.Mons.monFor(dex);
+    const nature = G.NATURE_BY[old.nature];
+    if (nature) {
+      if (nature.up) next[nature.up] = base[nature.up] * 1.1;
+      if (nature.down) next[nature.down] = base[nature.down] * 0.9;
+      next.atk = Math.max(next.pa, next.sa);
+      next.nature = nature.id;
+    }
+    const hpGain = next.hp - old.hp;
+    const dir = this.anim.dir;
+
+    this.maxHp = Math.max(1, this.maxHp + hpGain);
+    this.hp = G.U.clamp(this.hp + hpGain, 0, this.maxHp);
+    this.baseAtk *= next.atk / old.atk;
+    this.baseSpd *= next.spd / old.spd;
+    this.mon = next;
+    this.dex = dex;
+    this.scale = G.Sprites.playerScale(dex);
+    this.r = G.Sprites.playerRadius(dex);
+    this.bodyH = G.Sprites.bodyHeight(dex, this.scale);
+    this.anim = new G.Sprites.Animator(dex, this.scale, this.shiny);
+    this.anim.dir = dir;
+    this.anim.skin = this === G.Game.player ? G.Skins.worn(G.DB.save, dex) || null : null;
+    this.anim.loop(this.walking ? 'Walk' : 'Idle');
+    this.abil = G.AbilityFX.of(this.abilId, next);
+    return true;
+  }
+
   /** Segundos que hay que estar junto a un compañero caído para levantarlo. */
   static get REVIVE_TIME() { return 3; }
 

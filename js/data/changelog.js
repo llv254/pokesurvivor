@@ -6,6 +6,10 @@
  * Cada línea en español y en inglés.
  */
 G.CHANGELOG = [
+  { d: '2026-11-08', title: ['Evoluciones durante la partida', 'In-run evolutions'], new: [
+    ['Al subir de nivel, tu Pokémon puede evolucionar según las cadenas y niveles de PokeAPI. Se conservan sus movimientos y mejoras; las evoluciones con otros requisitos se adaptan al nivel de la partida.',
+     'When you level up, your Pokémon can evolve using PokeAPI evolution chains and levels. Its moves and upgrades are preserved; evolutions with other requirements are adapted to run level.']
+  ]},
   { d: '2026-10-28', title: ['Cooperativo por servidor', 'Co-op through a server'], chg: [
     ['Cooperativo: la partida ya no depende de que los móviles y routers de los jugadores puedan conectarse entre sí. Los mensajes pasan por un servidor Node.js; las salas, invitaciones y cuentas siguen como antes. Hace falta iniciar sesión.',
      'Co-op no longer depends on players’ phones and routers being able to connect to each other. Messages go through a Node.js server; rooms, invitations and accounts stay as before. You need to be signed in.']

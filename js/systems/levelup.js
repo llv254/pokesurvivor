@@ -92,6 +92,24 @@ G.LevelUp = (() => {
       });
     }
 
+    // --- evolución del Pokémon según las cadenas offline de PokeAPI ---
+    for (const ev of G.POKEMON_EVO[pl.mon.dex] || []) {
+      const target = G.DEX_BY[ev.dex];
+      if (!target || pl.level < ev.level) continue;
+      out.push({
+        w: 40, type: 'mon-evo', key: 'mon-evo:' + ev.dex,
+        icon: 'type:' + target.types[0], color: '#ffd23f', tag: G.T('EVOLUCIÓN'),
+        title: G.T(pl.mon.name) + ' → ' + G.T(target.name), desc: 'Nv. ' + ev.level,
+        apply: p => {
+          if (!p.evolveTo(ev.dex)) return;
+          G.FX.ring(p.x, p.y, 8, 120, '#ffd23f', 0.8, 6);
+          G.FX.burst(p.x, p.y - p.bodyH * 0.5, '#ffe14d', 40, 240);
+          G.Audio.sfx('legend');
+          if (G.Coop.active) G.Coop.evolved(p, ev.dex);
+        }
+      });
+    }
+
     // --- mejoras de movimientos que ya tienes ---
     for (const m of pl.moves) {
       const txt = G.Moves.nextUpText(m);
@@ -132,7 +150,8 @@ G.LevelUp = (() => {
     const picked = [];
     const used = new Set();
     // Si hay una evolución lista, su carta dorada sale siempre.
-    const evo = pool.findIndex(c => c.type === 'evo');
+    let evo = pool.findIndex(c => c.type === 'mon-evo');
+    if (evo < 0) evo = pool.findIndex(c => c.type === 'evo');
     if (evo >= 0) { const c = pool.splice(evo, 1)[0]; used.add(c.key); picked.push(c); }
 
     while (picked.length < n && pool.length) {

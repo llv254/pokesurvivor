@@ -33,7 +33,7 @@ test('Mega cards follow the run threshold and can be selected only once', () => 
   assert.equal(G.LevelUp.offer(pl).some(card => card.type === 'mega'), false);
   game.st.time = 1;
   const card = G.LevelUp.offer(pl).find(choice => choice.type === 'mega');
-  assert.equal(card.tag, 'LEGENDARY');
+  assert.equal(card.tag, 'UNIQUE');
   card.apply(pl);
   assert.equal(pl.megaForm, 'mega-x');
   assert.equal(G.FX.count, 1);

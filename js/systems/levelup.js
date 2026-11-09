@@ -37,7 +37,7 @@ G.LevelUp = (() => {
   ];
 
   const RARITIES = [
-    { label: 'Común', color: '#f4f8ff', level: 0, chance: 35 },
+    { label: 'Común', color: '#b0a99f', level: 0, chance: 35 },
     { label: 'Poco común', color: '#5fe08a', level: 1, chance: 30 },
     { label: 'Rara', color: '#4fb4ff', level: 2, chance: 20 },
     { label: 'Épica', color: '#c47bff', level: 3, chance: 10 },
@@ -73,7 +73,7 @@ G.LevelUp = (() => {
     const mon = G.T(pl.mon.name);
     return {
       w: 40, type: 'mega', key: 'mega:' + form.id,
-      icon: 'evolve', color: '#ffc400', tag: G.T('LEGENDARY'),
+      icon: 'evolve', color: '#ffc400', tag: G.T('UNIQUE'),
       title: form.id === 'primal' ? 'Primal ' + mon : 'Mega ' + mon + (suffix ? ' ' + suffix : ''),
       desc: G.T('Evolve Mega: +20% attack and +20% maximum health.'),
       apply: p => {

@@ -91,7 +91,9 @@ G.RunUI = (() => {
       el.className = 'card';
       const tag = c.type === 'new'
         ? `<span class="tag-chip" style="background:${c.color}">Nuevo · ${c.tag}</span>${c.cat ? `<span class="tag-chip cat">${c.cat}</span>` : ''}`
-        : c.type === 'up' || c.type === 'evo' || c.type === 'mega'
+        : c.type === 'evo' || c.type === 'mega'
+          ? `<span class="tag-chip evo-tag">${c.tag}</span>`
+          : c.type === 'up'
           ? `<span class="tag-chip" style="background:${c.color}">${c.tag}</span>`
           : `<span class="tag-chip" style="background:${c.color || '#9fb1c9'}">${c.tag}</span>`;
       if (c.type === 'evo' || c.type === 'mega') el.classList.add('evo');

@@ -36,6 +36,10 @@ G.Icons = (() => {
     iris: { pal: { y: '#ffd23f', w: '#ffffff', r: '#ff5f6d', o: '#ffa64d', g: '#5fe08a', b: '#4fb4ff', p: '#c47bff' }, rows: [
       '....kkkk....', '...ky..yk...', '....kyyk....', '.....kk.....', '....kwrk....', '...kwrrok...',
       '..kwrroyyk..', '.krooyyggbk.', '..koyggbbk..', '...kgbppk...', '....kbpk....', '.....kk.....'] },
+    // Mega Piedra: una gema violeta con una M azul.
+    mega: { pal: { p: '#b48aff', d: '#6543a8', b: '#7fe0ff', w: '#f4f8ff' }, rows: [
+      '.....kk.....', '....kppk....', '...kppppk...', '..kppppppk..', '.kppppppppk.', 'kppppppppppk',
+      'kppbbppbbppk', 'kppbpbpbpppk', 'kppbbbbbbppk', '.kppppppppk.', '..kppppppk..', '...kkkkkk...'] },
     // Halloween (25-10-2026): caramelo (la moneda del evento), calabaza y sombrero de bruja.
     candy: { pal: { o: '#ff8a2a', y: '#ffd23f', w: '#fff1d6', p: '#7a4ad0', d: '#4a2a8a' }, rows: [
       '............', '............', 'kk...kk...kk', 'kpk.kyyk.kpk', 'kppkowyokppk', 'kpdkooyokdpk',

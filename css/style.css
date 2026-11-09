@@ -216,6 +216,8 @@ label { display: block; font-size: 14px; color: var(--muted); margin: 8px 0 4px;
 .cell b { display: block; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cell .no { position: absolute; top: 3px; left: 6px; font-size: 11px; color: var(--muted); }
 .cell .stars { font-size: 10px; letter-spacing: -1px; }
+.cell .dex-marks { display: flex; justify-content: center; align-items: center; gap: 3px; min-height: 12px; margin-top: 2px; }
+.cell .mega-mark { display: inline-flex; align-items: center; line-height: 0; }
 .cell .partner { position: absolute; top: 3px; right: 5px; font-size: 12px; }
 
 .wide { width: min(980px, 100%); }

@@ -6,6 +6,10 @@
  * Cada línea en español y en inglés.
  */
 G.CHANGELOG = [
+  { d: '2026-11-09', title: ['Iconos de Mega Evolución', 'Mega Evolution icons'], chg: [
+    ['La colección muestra un icono junto a la Poké Ball en los Pokémon que pueden Mega Evolucionar.',
+     'The collection shows an icon beside the Poké Ball for Pokémon that can Mega Evolve.']
+  ]},
   { d: '2026-11-09', title: ['Nuevas rarezas en las mejoras', 'New rarities for stat upgrades'], new: [
     ['Las mejoras de estadísticas pueden ser Común, Poco común, Rara, Épica o Legendaria. Cuanto mayor sea la rareza, más aumenta; cada carta muestra la cantidad exacta.',
      'Stat upgrades can be Common, Uncommon, Rare, Epic or Legendary. Higher rarity gives a bigger boost, and each card shows the exact amount.']

@@ -93,7 +93,9 @@ G.RunUI = (() => {
         ? `<span class="tag-chip" style="background:${c.color}">Nuevo · ${c.tag}</span>${c.cat ? `<span class="tag-chip cat">${c.cat}</span>` : ''}`
         : c.type === 'up' || c.type === 'evo'
           ? `<span class="tag-chip" style="background:${c.color}">${c.tag}</span>`
-          : `<span class="tag-chip" style="background:${c.color === '#ffd23f' ? '#ffd23f' : '#9fb1c9'}">${c.tag}</span>`;
+          : c.type === 'mega'
+            ? `<span class="tag-chip mega-tag">${c.tag}</span>`
+            : `<span class="tag-chip" style="background:${c.color}">${c.tag}</span>`;
       if (c.type === 'evo') el.classList.add('evo');
       if (c.type === 'mega') el.classList.add('mega');
       el.innerHTML =

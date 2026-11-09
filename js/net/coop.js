@@ -404,7 +404,10 @@ G.Coop = (() => {
           emit(['c', from, ev[1], ev[2], ev[3], ev[4]], from);
           break;
         case 'mg':
-          if (m.pl.megaEvolve(ev[1])) emit(['mg', from, ev[1]], from);
+          if (m.pl.megaEvolve(ev[1])) {
+            G.FX.evolve(m.pl.x, m.pl.y, m.pl.r, m.pl.bodyH);
+            emit(['mg', from, ev[1]], from);
+          }
           break;
         case 'pb':
           G.World.breakAt(ev[1], ev[2]);
@@ -507,7 +510,11 @@ G.Coop = (() => {
                               friendly: false, color: '#ff7a9e', vis: G.VFX.forType(ev[8]), mtype: ev[8], cat: ev[9] });
         break;
       case 'c': { const m = mates.get(ev[1]); if (m) G.Combat.ghostCast(m.pl, ev[2], ev[3], ev[4], ev[5]); break; }
-      case 'mg': { const m = mates.get(ev[1]); if (m) m.pl.megaEvolve(ev[2]); break; }
+      case 'mg': {
+        const m = mates.get(ev[1]);
+        if (m && m.pl.megaEvolve(ev[2])) G.FX.evolve(m.pl.x, m.pl.y, m.pl.r, m.pl.bodyH);
+        break;
+      }
       case 'item': api.item(ev[1]); break;
       case 'orb': if (typeof ev[1] === 'string') api.orb(ev[1]); break;
       case 'ob': if (typeof ev[1] === 'string') G.Orbs.nearBuff(ev[1], num(ev[2], 0, -1e6, 1e6), num(ev[3], 0, -1e6, 1e6)); break;

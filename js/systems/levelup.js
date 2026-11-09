@@ -129,7 +129,7 @@ G.LevelUp = (() => {
       if (!ev.ready) { waiting[ev.needs] = m; continue; }
       out.push({
         w: 40, type: 'evo', key: 'evo:' + m.id,
-        icon: 'evolve', color: '#ffd23f', tag: 'EVOLUCIÓN',
+        icon: 'move:' + m.id, color: '#ffd23f', tag: 'EVOLUCIÓN',
         title: G.T(m.name, 'move') + ' → ' + G.T(ev.name, 'move'), desc: ev.text,
         apply: p => {
           G.Moves.evolve(m);

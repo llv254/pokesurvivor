@@ -124,6 +124,24 @@ G.Icons = (() => {
       '................................'
     ]
   },
+    megaSymbol: { pal: { k: '#1b1828', p: '#9b5ff5', d: '#231a3a', w: '#f6f8ff', l: '#c4bafa', m: '#ee5fd6', o: '#f0a050', b: '#5a82f8', y: '#fde06a', c: '#7ae0ff', g: '#84dc84' }, rows: [
+      '.....kkkkkk.....',
+      '...kkppmmmmkk...',
+      '..kppddwdddmmk..',
+      '.kpdddlwlddddok.',
+      '.kpddlwdwddddok.',
+      'kbdddwllwlddddok',
+      'kbddlwddlwldddok',
+      'kbddlwwlddwdddok',
+      'kbdddwdlwwwlddyk',
+      'kbdddlwdddwlddyk',
+      'kbddddwwlwwdddyk',
+      '.kcddddwdwlddyk.',
+      '.kcddddwlwdddyk.',
+      '..kccddwlwddgyk.',
+      '...kkcgggggkk...',
+      '.....kkkkkk.....'
+    ] },
     boot: { pal: { b: '#4fb4ff', d: '#2a6fb0', w: '#e6f4ff', g: '#e8e8f0' }, rows: [
       '............', '....kkkk....', '....kbbk....', '....kbbk....', '....kbbk....', '....kbbbkk..',
       '...kbwbbbbk.', '..kbbbbbbbbk', '..kdddddddbk', '..kgggggggk.', '...kkkkkkk..', '............'] },

@@ -289,7 +289,7 @@ G.MenuUI = (() => {
     else if (sh) cell.insertAdjacentHTML('beforeend', `<span class="badge-r" title="Tienes su shiny">${G.Icons.html('shiny', 12)}</span>`);
     const useShiny = sh && p.dex === s.partner && s.partnerShiny;
     cell.appendChild(G.UI.spriteCanvas(p.dex, 92, 80, { scale: 2, silhouette: !own, shadow: own, shiny: useShiny }));
-    cell.insertAdjacentHTML('beforeend', `<b>${own ? p.name : '???'}</b><span class="dex-marks">${G.UI.stars(p.rarity, 9)}${mega ? `<span class="mega-mark" role="img" aria-label="Mega" title="Mega">${G.Icons.html('mega', 12)}</span>` : ''}</span>`);
+    cell.insertAdjacentHTML('beforeend', `<b>${own ? p.name : '???'}</b><span class="dex-marks">${G.UI.stars(p.rarity, 9)}${mega ? `<span class="mega-mark" role="img" aria-label="Mega" title="Mega">${G.Icons.html('megaSymbol', 12)}</span>` : ''}</span>`);
     cell.onclick = () => {
       dexSel = p.dex;
       $('dex-grid').querySelectorAll('.cell').forEach(c => c.classList.remove('on'));

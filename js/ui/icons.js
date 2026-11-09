@@ -14,6 +14,18 @@ G.Icons = (() => {
   // ---------------- iconos de interfaz (12×12) ----------------
   const MEDAL = ['.kkk....kkk.', '.krk....kqk.', '..krk..kqk..', '...krkkqk...', '....kkkk....', '...kmmmmk...',
                  '..kmwmmmnk..', '.kmwmsmmmnk.', '.kmmsssmmnk.', '.kmmmsmmmnk.', '..kmmmmmnk..', '...kkkkkk...'];
+  const EVOLVE_ROWS = (() => {
+    const rows = Array.from({ length: 16 }, () => Array(16).fill('.'));
+    const left = [2, 3, 4, 5, 6, 7, 8, 9, 9, 8, 7, 6, 5, 4, 3, 2];
+    const colors = ['r', 'r', 'o', 'o', 'y', 'y', 'g', 'g', 'b', 'b', 'p', 'p', 'b', 'b', 'g', 'g'];
+    for (let y = 0; y < rows.length; y++) {
+      const a = left[y], b = 15 - a;
+      if (y % 3 === 2 && b - a > 2) for (let x = a + 2; x < b; x++) rows[y][x] = 'w';
+      rows[y][a] = rows[y][a + 1] = colors[y];
+      rows[y][b] = rows[y][b - 1] = colors[15 - y];
+    }
+    return rows.map(row => row.join(''));
+  })();
 
   const UI = {
     // Tienda Kecleon y Mochila (20-10-2026, dibujados por TheAdro7 en el PR #236): MT, Menta, Cápsulas, Mochila y tienda.
@@ -79,11 +91,7 @@ G.Icons = (() => {
     up: { pal: { g: '#5fe08a', d: '#2f9a52', w: '#c8ffd8' }, rows: [
       '.....kk.....', '....kwgk....', '...kwgggk...', '..kwgggggk..', '.kwgggggggk.', 'kkkkggggkkkk',
       '...kggggk...', '...kggggk...', '...kggddk...', '...kgdddk...', '...kddddk...', '...kkkkkk...'] },
-    evolve: { pal: { r: '#ff5364', o: '#ff9a32', y: '#ffe14d', g: '#62d96b', b: '#39a8ff', p: '#bd66ff', w: '#fff4d0' }, rows: [
-      '....rr....rr....', '...rr.rr..rr.rr.', '..oo..wwww..oo..', '.oo....ww....oo.',
-      'oo....yyyy....oo', '.yy..yy..yy..yy.', '..yy..gggg..yy..', '...gg....gg.....',
-      '....gg....gg....', '...bb....bb.....', '..bb..bbbb..bb..', '.bb..bb..bb..bb.',
-      'bb....pppp....bb', '.pp....pp....pp.', '..pp..pp..pp..pp', '...pp......pp...'] },
+    evolve: { pal: { r: '#ff5364', o: '#ff9a32', y: '#ffe14d', g: '#62d96b', b: '#39a8ff', p: '#bd66ff', w: '#fff4d0' }, rows: EVOLVE_ROWS, outline: true },
     boot: { pal: { b: '#4fb4ff', d: '#2a6fb0', w: '#e6f4ff', g: '#e8e8f0' }, rows: [
       '............', '....kkkk....', '....kbbk....', '....kbbk....', '....kbbk....', '....kbbbkk..',
       '...kbwbbbbk.', '..kbbbbbbbbk', '..kdddddddbk', '..kgggggggk.', '...kkkkkkk..', '............'] },

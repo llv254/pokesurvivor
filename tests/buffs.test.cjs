@@ -45,3 +45,34 @@ test('Assault Vest does not count toward the 70% cap of the Armor cards, and tak
   vest.off(p);
   assert.equal(Math.round(p.reduction * 100), 70, 'taking the vest off keeps the cards');
 });
+
+test('stat cards roll five rarity tiers with matching colors and stronger effects', () => {
+  const H = {
+    T: value => value,
+    Game: { st: { time: 0 } },
+    U: { TYPE_COLOR: {}, TYPE_NAME: {}, pickN: (list, n) => list.slice(0, n) },
+    Moves: { poolFor: () => [], evoInfo: () => null, nextUpText: () => null },
+    Stats: { NAME: {} }
+  };
+  const rolls = [0, 0.63, 0.85, 0.95, 0.99];
+  const fakeMath = Object.create(Math);
+  fakeMath.random = () => rolls.shift() || 0;
+  new Function('G', 'Math', source('js/systems/levelup.js'))(H, fakeMath);
+  const player = {
+    slots: [1, 2, 3, 4], maxMoves: 4, moves: [], statsTaken: {}, banned: new Set(),
+    mon: { name: 'Testmon' }, dex: 1, hasMove: () => false
+  };
+  const cards = H.LevelUp.offer(player, 5);
+  const colors = Object.fromEntries(cards.map(card => [card.tag, card.color]));
+  assert.deepEqual(colors, {
+    'Común': '#f4f8ff', 'Poco común': '#5fe08a', 'Rara': '#4fb4ff',
+    'Épica': '#c47bff', 'Legendaria': '#ffd23f'
+  });
+
+  const atk = H.LevelUp.STATS.find(stat => stat.id === 'atk');
+  const common = { atkMul: 1 }, legendary = { atkMul: 1 };
+  atk.apply(common, 1);
+  atk.apply(legendary, 5);
+  assert.equal(common.atkMul, 1.1);
+  assert.equal(legendary.atkMul, 1.5);
+});

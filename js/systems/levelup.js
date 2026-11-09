@@ -8,24 +8,41 @@ G.LevelUp = (() => {
 
   const STATS = [
     { id: 'hp',   icon: 'heart', title: 'Vigor',        desc: '+20 de vida máxima (y la recupera).',
-      apply: pl => pl.addMaxHp(20) },
+      apply: (pl, power = 1) => pl.addMaxHp(20 * power) },
     { id: 'atk',  icon: 'fist', title: 'Potencia',     desc: '+10% de daño con todos los movimientos.',
-      apply: pl => pl.atkMul *= 1.10, max: 40 },
+      apply: (pl, power = 1) => pl.atkMul *= 1 + 0.10 * power, max: 40 },
     { id: 'spd',  icon: 'boot', title: 'Carrera',      desc: '+7% de velocidad de movimiento.',
-      apply: pl => pl.spdMul *= 1.07, max: 8 },
+      apply: (pl, power = 1) => pl.spdMul *= 1 + 0.07 * power, max: 8 },
     { id: 'cd',   icon: 'clock', title: 'Reflejos',     desc: '-8% de recarga en todos los movimientos.',
-      apply: pl => pl.cdMul *= 0.92, max: 10 },
+      apply: (pl, power = 1) => pl.cdMul *= 1 - 0.08 * power, max: 10 },
     { id: 'def',  icon: 'shield', title: 'Coraza',       desc: '+6% de reducción de daño recibido.',
-      apply: pl => pl.dmgReduce = Math.min(0.7, pl.dmgReduce + 0.06), max: 12 },
+      apply: (pl, power = 1) => pl.dmgReduce = Math.min(0.7, pl.dmgReduce + 0.06 * power), max: 12 },
     { id: 'rgn',  icon: 'sprout', title: 'Síntesis',     desc: '+0.9 de vida regenerada por segundo.',
-      apply: pl => pl.regenFlat += 0.9 },
+      apply: (pl, power = 1) => pl.regenFlat += 0.9 * power },
     { id: 'mag',  icon: 'magnet', title: 'Imán',         desc: '+30% de radio de recogida de experiencia.',
-      apply: pl => pl.magnet *= 1.30, max: 6 },
+      apply: (pl, power = 1) => pl.magnet *= 1 + 0.30 * power, max: 6 },
     { id: 'xp',   icon: 'book', title: 'Aprendizaje',  desc: '+12% de experiencia ganada.',
-      apply: pl => pl.xpMul *= 1.12, max: 8 },
+      apply: (pl, power = 1) => pl.xpMul *= 1 + 0.12 * power, max: 8 },
     { id: 'heal', icon: 'berry', title: 'Baya Zidra',   desc: 'Recupera el 45% de tu vida ahora mismo.',
-      apply: pl => pl.heal(pl.maxHp * 0.45) }
+      apply: (pl, power = 1) => pl.heal(pl.maxHp * Math.min(1, 0.45 * power)) }
   ];
+
+  const RARITIES = [
+    { label: 'Común', color: '#f4f8ff', multiplier: 1, chance: 62 },
+    { label: 'Poco común', color: '#5fe08a', multiplier: 1.5, chance: 22 },
+    { label: 'Rara', color: '#4fb4ff', multiplier: 2, chance: 10 },
+    { label: 'Épica', color: '#c47bff', multiplier: 3, chance: 5 },
+    { label: 'Legendaria', color: '#ffd23f', multiplier: 5, chance: 1 }
+  ];
+
+  function rollRarity() {
+    let roll = Math.random() * 100;
+    for (const rarity of RARITIES) {
+      roll -= rarity.chance;
+      if (roll < 0) return rarity;
+    }
+    return RARITIES[0];
+  }
 
   /** n elementos distintos de list, cada uno con probabilidad según weight(x). */
   function pickWeighted(list, n, weight) {
@@ -49,7 +66,7 @@ G.LevelUp = (() => {
       w: 40, type: 'mega', key: 'mega:' + form.id,
       icon: 'evolve', color: '#ffc400', tag: G.T('LEGENDARY'),
       title: form.id === 'primal' ? 'Primal ' + mon : 'Mega ' + mon + (suffix ? ' ' + suffix : ''),
-      desc: G.T('Evolve to Mega. +20% attack and +20% maximum health until the end of the game.'),
+      desc: G.T('Evolve Mega: +20% attack and +20% maximum health.'),
       apply: p => {
         if (!p.megaEvolve(form.id)) return;
         G.FX.evolve(p.x, p.y, p.r, p.bodyH);
@@ -137,12 +154,14 @@ G.LevelUp = (() => {
     const pickStats = G.U.pickN(STATS.filter(s => !waiting[s.id] && room(s)), 5).concat(STATS.filter(s => waiting[s.id]));
     for (const s of pickStats) {
       const evoFor = waiting[s.id];
+      const rarity = rollRarity();
       out.push({
         w: evoFor ? 14 : pl.slots.length < pl.maxMoves ? 4 : 7,
         type: 'stat', key: 'stat:' + s.id,
-        icon: s.icon, color: evoFor ? '#ffd23f' : '#8fa3c4', tag: evoFor ? 'Evoluciona ' + G.T(evoFor.name, 'move') : 'Mejora',
-        title: s.title, desc: s.desc,
-        apply: p => { s.apply(p); p.statsTaken[s.id] = (p.statsTaken[s.id] || 0) + 1; }
+        icon: s.icon, color: rarity.color,
+        tag: G.T(rarity.label) + (evoFor ? ' · ' + G.T('Evoluciona') + ' ' + G.T(evoFor.name, 'move') : ''),
+        title: s.title, desc: s.desc + (rarity.multiplier > 1 ? ' ×' + rarity.multiplier : ''),
+        apply: p => { s.apply(p, rarity.multiplier); p.statsTaken[s.id] = (p.statsTaken[s.id] || 0) + 1; }
       });
     }
 
@@ -171,5 +190,5 @@ G.LevelUp = (() => {
     return picked;
   }
 
-  return { offer, STATS };
+  return { offer, STATS, RARITIES };
 })();

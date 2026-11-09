@@ -79,11 +79,11 @@ G.Icons = (() => {
     up: { pal: { g: '#5fe08a', d: '#2f9a52', w: '#c8ffd8' }, rows: [
       '.....kk.....', '....kwgk....', '...kwgggk...', '..kwgggggk..', '.kwgggggggk.', 'kkkkggggkkkk',
       '...kggggk...', '...kggggk...', '...kggddk...', '...kgdddk...', '...kddddk...', '...kkkkkk...'] },
-    evolve: { pal: { g: '#5fe08a', d: '#2f9a52', y: '#ffd23f', o: '#c08a10', w: '#fff4b0' }, rows: [
-      '......kk........', '.....kyyk.......', '......kk........', '.....kwyk.......',
-      '.....kyyk.......', '....kgygk.......', '...kgggggk......', '..kgggggggk.....',
-      '.kgggggggggk....', '...kgggk........', '..kkgggkkk......', '.kggggggggk.....',
-      'kggggggggggk....', '.kkkkkkkkkkk.....', '................', '................'] },
+    evolve: { pal: { r: '#ff5364', o: '#ff9a32', y: '#ffe14d', g: '#62d96b', b: '#39a8ff', p: '#bd66ff', w: '#fff4d0' }, rows: [
+      '....rr....rr....', '...rr.rr..rr.rr.', '..oo..wwww..oo..', '.oo....ww....oo.',
+      'oo....yyyy....oo', '.yy..yy..yy..yy.', '..yy..gggg..yy..', '...gg....gg.....',
+      '....gg....gg....', '...bb....bb.....', '..bb..bbbb..bb..', '.bb..bb..bb..bb.',
+      'bb....pppp....bb', '.pp....pp....pp.', '..pp..pp..pp..pp', '...pp......pp...'] },
     boot: { pal: { b: '#4fb4ff', d: '#2a6fb0', w: '#e6f4ff', g: '#e8e8f0' }, rows: [
       '............', '....kkkk....', '....kbbk....', '....kbbk....', '....kbbk....', '....kbbbkk..',
       '...kbwbbbbk.', '..kbbbbbbbbk', '..kdddddddbk', '..kgggggggk.', '...kkkkkkk..', '............'] },

@@ -79,6 +79,11 @@ G.Icons = (() => {
     up: { pal: { g: '#5fe08a', d: '#2f9a52', w: '#c8ffd8' }, rows: [
       '.....kk.....', '....kwgk....', '...kwgggk...', '..kwgggggk..', '.kwgggggggk.', 'kkkkggggkkkk',
       '...kggggk...', '...kggggk...', '...kggddk...', '...kgdddk...', '...kddddk...', '...kkkkkk...'] },
+    evolve: { pal: { g: '#5fe08a', d: '#2f9a52', y: '#ffd23f', o: '#c08a10', w: '#fff4b0' }, rows: [
+      '......kk........', '.....kyyk.......', '......kk........', '.....kwyk.......',
+      '.....kyyk.......', '....kgygk.......', '...kgggggk......', '..kgggggggk.....',
+      '.kgggggggggk....', '...kgggk........', '..kkgggkkk......', '.kggggggggk.....',
+      'kggggggggggk....', '.kkkkkkkkkkk.....', '................', '................'] },
     boot: { pal: { b: '#4fb4ff', d: '#2a6fb0', w: '#e6f4ff', g: '#e8e8f0' }, rows: [
       '............', '....kkkk....', '....kbbk....', '....kbbk....', '....kbbk....', '....kbbbkk..',
       '...kbwbbbbk.', '..kbbbbbbbbk', '..kdddddddbk', '..kgggggggk.', '...kkkkkkk..', '............'] },

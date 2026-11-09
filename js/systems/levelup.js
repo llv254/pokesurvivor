@@ -47,7 +47,7 @@ G.LevelUp = (() => {
     const mon = G.T(pl.mon.name);
     return {
       w: 40, type: 'mega', key: 'mega:' + form.id,
-      icon: 'type:' + form.stats.types[0], color: '#ffc400', tag: G.T('LEGENDARY'),
+      icon: 'evolve', color: '#ffc400', tag: G.T('LEGENDARY'),
       title: form.id === 'primal' ? 'Primal ' + mon : 'Mega ' + mon + (suffix ? ' ' + suffix : ''),
       desc: G.T('Evolve to Mega. +20% attack and +20% maximum health until the end of the game.'),
       apply: p => {
@@ -103,7 +103,7 @@ G.LevelUp = (() => {
       if (!ev.ready) { waiting[ev.needs] = m; continue; }
       out.push({
         w: 40, type: 'evo', key: 'evo:' + m.id,
-        icon: 'move:' + m.id, color: '#ffd23f', tag: 'EVOLUCIÓN',
+        icon: 'evolve', color: '#ffd23f', tag: 'EVOLUCIÓN',
         title: G.T(m.name, 'move') + ' → ' + G.T(ev.name, 'move'), desc: ev.text,
         apply: p => {
           G.Moves.evolve(m);

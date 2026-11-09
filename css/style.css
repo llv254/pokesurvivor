@@ -500,16 +500,16 @@ label { display: block; font-size: 14px; color: var(--muted); margin: 8px 0 4px;
 /* ---------- cartas de nivel ---------- */
 .cards { display: flex; flex-direction: column; gap: 10px; width: min(560px, 100%); }
 .card {
-  display: flex; align-items: center; gap: 14px; text-align: left; cursor: pointer;
+  display: flex; align-items: flex-start; gap: 14px; min-height: 88px; text-align: left; cursor: pointer;
   background: rgba(0,0,0,.2); border: 2px solid rgba(244,248,255,.3); border-radius: 12px;
   padding: 12px 14px; transition: transform .08s, background .12s, border-color .12s;
 }
 .card:hover { background: rgba(255,255,255,.1); border-color: var(--edge); transform: translateX(4px); }
-.card .ico { flex: 0 0 46px; height: 46px; border-radius: 10px; display: grid; place-items: center; font-size: 24px; }
-.card .txt { flex: 1; }
+.card .ico { flex: 0 0 46px; height: 46px; margin-top: 2px; border-radius: 10px; display: grid; place-items: center; font-size: 24px; }
+.card .txt { flex: 1; min-width: 0; }
 .card .nm { font-weight: 700; font-size: 18px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .card .ds { color: var(--muted); font-size: 14px; }
-.card .key { font-size: 13px; color: var(--muted); border: 2px solid rgba(244,248,255,.3); border-radius: 6px; padding: 2px 8px; }
+.card .key { flex: 0 0 32px; margin-top: 3px; text-align: center; font-size: 13px; color: var(--muted); border: 2px solid rgba(244,248,255,.3); border-radius: 6px; padding: 2px 4px; }
 .tag-chip { font-size: 11px; padding: 2px 7px; border-radius: 5px; color: #10131a; text-shadow: none; font-weight: 700; }
 /* Físico / Especial en las cartas de nivel: aparte del tipo, oscura y con borde. */
 .tag-chip.cat { background: rgba(10,20,48,.55); color: #f4f8ff; border: 1.5px solid rgba(170,195,255,.5); padding: 1px 7px; }

@@ -111,6 +111,11 @@ G.I18n.add({
   // ---------------- cartas al subir de nivel ----------------
   'EVOLUCIÓN': 'EVOLUTION', 'Evoluciona': 'Evolves', 'Mejora': 'Upgrade', 'Nuevo · {x}': 'New · {x}', 'Nv.': 'Lv.',
   '+20 de vida máxima (y la recupera).': '+20 max HP (and heals it).', '+10% de daño con todos los movimientos.': '+10% damage with every move.',
+  '+{x} de vida máxima (y la recupera).': '+{x} max HP (and heals it).', '+{x}% de daño con todos los movimientos.': '+{x}% damage with every move.',
+  '+{x}% de velocidad de movimiento.': '+{x}% movement speed.', '-{x}% de recarga en todos los movimientos.': '-{x}% cooldown on every move.',
+  '+{x}% de reducción de daño recibido.': '+{x}% damage reduction.', '+{x} de vida regenerada por segundo.': '+{x} HP regenerated per second.',
+  '+{x}% de radio de recogida de experiencia.': '+{x}% experience pickup radius.', '+{x}% de experiencia ganada.': '+{x}% experience gained.',
+  'Recupera el {x}% de tu vida ahora mismo.': 'Restores {x}% of your HP right now.',
   '+7% de velocidad de movimiento.': '+7% movement speed.', '-8% de recarga en todos los movimientos.': '-8% cooldown on every move.',
   '+6% de reducción de daño recibido.': '+6% damage reduction.', '+0.9 de vida regenerada por segundo.': '+0.9 HP regenerated per second.',
   '+30% de radio de recogida de experiencia.': '+30% experience pickup radius.', '+12% de experiencia ganada.': '+12% experience gained.',

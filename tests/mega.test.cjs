@@ -14,6 +14,7 @@ test('Mega cards follow the run threshold and can be selected only once', () => 
   const G = {
     MEGA_FORMS: data.G.MEGA_FORMS,
     Game: game,
+    I18n: { locale: 'en', f: (text, ...values) => text.replace(/\{x\}/g, () => values.shift()) },
     T: value => value,
     U: { pick: list => list[0], pickN: (list, count) => list.slice(0, count) },
     Moves: { poolFor: () => [], evoInfo: () => null, nextUpText: () => null },

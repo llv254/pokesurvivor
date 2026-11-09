@@ -39,7 +39,7 @@ test('Assault Vest does not count toward the 70% cap of the Armor cards, and tak
   const p = { dmgReduce: 0, itemReduce: 0, buffs: { def: { n: 0, t: 0, amount: 0 } } };
   Object.defineProperty(p, 'reduction', Object.getOwnPropertyDescriptor(G.Player.prototype, 'reduction'));
   vest.on(p);
-  for (let i = 0; i < 12; i++) card.apply(p);
+  for (let i = 0; i < 12; i++) card.apply(p, 5);
   assert.equal(Math.round(p.dmgReduce * 100), 70, 'the cards alone reach 70%');
   assert.equal(Math.round(p.reduction * 100), 80, 'with the vest on top (overall limit 80%)');
   vest.off(p);
@@ -49,6 +49,7 @@ test('Assault Vest does not count toward the 70% cap of the Armor cards, and tak
 test('stat cards roll five rarity tiers with matching colors and stronger effects', () => {
   const H = {
     T: value => value,
+    I18n: { locale: 'en', f: (text, ...values) => text.replace(/\{x\}/g, () => values.shift()) },
     Game: { st: { time: 0 } },
     U: { TYPE_COLOR: {}, TYPE_NAME: {}, pickN: (list, n) => list.slice(0, n) },
     Moves: { poolFor: () => [], evoInfo: () => null, nextUpText: () => null },
@@ -68,11 +69,22 @@ test('stat cards roll five rarity tiers with matching colors and stronger effect
     'Común': '#f4f8ff', 'Poco común': '#5fe08a', 'Rara': '#4fb4ff',
     'Épica': '#c47bff', 'Legendaria': '#ffd23f'
   });
+  assert.deepEqual(H.LevelUp.STATS.map(stat => stat.desc(5)), [
+    '+25 de vida máxima (y la recupera).',
+    '+25% de daño con todos los movimientos.',
+    '+10% de velocidad de movimiento.',
+    '-10% de recarga en todos los movimientos.',
+    '+15% de reducción de daño recibido.',
+    '+1.5 de vida regenerada por segundo.',
+    '+25% de radio de recogida de experiencia.',
+    '+15% de experiencia ganada.',
+    'Recupera el 25% de tu vida ahora mismo.'
+  ]);
 
   const atk = H.LevelUp.STATS.find(stat => stat.id === 'atk');
   const common = { atkMul: 1 }, legendary = { atkMul: 1 };
   atk.apply(common, 1);
   atk.apply(legendary, 5);
-  assert.equal(common.atkMul, 1.1);
-  assert.equal(legendary.atkMul, 1.5);
+  assert.equal(common.atkMul, 1.05);
+  assert.equal(legendary.atkMul, 1.25);
 });

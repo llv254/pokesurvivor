@@ -6,6 +6,10 @@
  * Cada línea en español y en inglés.
  */
 G.CHANGELOG = [
+  { d: '2026-11-09', title: ['Nuevas rarezas en las mejoras', 'New rarities for stat upgrades'], new: [
+    ['Las mejoras de estadísticas pueden ser Común, Poco común, Rara, Épica o Legendaria. Cuanto mayor sea la rareza, más aumenta; cada carta muestra la cantidad exacta.',
+     'Stat upgrades can be Common, Uncommon, Rare, Epic or Legendary. Higher rarity gives a bigger boost, and each card shows the exact amount.']
+  ]},
   { d: '2026-11-08', title: ['¡Mega Evolución!', 'Mega Evolution!'], new: [
     ['A partir del minuto 30, los Pokémon compatibles pueden encontrar una rara carta ÚNICA para Mega Evolucionar hasta acabar la partida. Cada forma tiene sus propios tipos, estadísticas y sprite; aumenta el ataque al menos un 20 % y la vida máxima un 20 %.',
      'After minute 30, compatible Pokémon can find a rare UNIQUE card to Mega Evolve for the rest of the run. Each form has its own types, stats and sprite; attack increases by at least 20% and max HP by 20%.']

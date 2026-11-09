@@ -7,32 +7,41 @@
 G.LevelUp = (() => {
 
   const STATS = [
-    { id: 'hp',   icon: 'heart', title: 'Vigor',        desc: '+20 de vida máxima (y la recupera).',
-      apply: (pl, power = 1) => pl.addMaxHp(20 * power) },
-    { id: 'atk',  icon: 'fist', title: 'Potencia',     desc: '+10% de daño con todos los movimientos.',
-      apply: (pl, power = 1) => pl.atkMul *= 1 + 0.10 * power, max: 40 },
-    { id: 'spd',  icon: 'boot', title: 'Carrera',      desc: '+7% de velocidad de movimiento.',
-      apply: (pl, power = 1) => pl.spdMul *= 1 + 0.07 * power, max: 8 },
-    { id: 'cd',   icon: 'clock', title: 'Reflejos',     desc: '-8% de recarga en todos los movimientos.',
-      apply: (pl, power = 1) => pl.cdMul *= 1 - 0.08 * power, max: 10 },
-    { id: 'def',  icon: 'shield', title: 'Coraza',       desc: '+6% de reducción de daño recibido.',
-      apply: (pl, power = 1) => pl.dmgReduce = Math.min(0.7, pl.dmgReduce + 0.06 * power), max: 12 },
-    { id: 'rgn',  icon: 'sprout', title: 'Síntesis',     desc: '+0.9 de vida regenerada por segundo.',
-      apply: (pl, power = 1) => pl.regenFlat += 0.9 * power },
-    { id: 'mag',  icon: 'magnet', title: 'Imán',         desc: '+30% de radio de recogida de experiencia.',
-      apply: (pl, power = 1) => pl.magnet *= 1 + 0.30 * power, max: 6 },
-    { id: 'xp',   icon: 'book', title: 'Aprendizaje',  desc: '+12% de experiencia ganada.',
-      apply: (pl, power = 1) => pl.xpMul *= 1 + 0.12 * power, max: 8 },
-    { id: 'heal', icon: 'berry', title: 'Baya Zidra',   desc: 'Recupera el 45% de tu vida ahora mismo.',
-      apply: (pl, power = 1) => pl.heal(pl.maxHp * Math.min(1, 0.45 * power)) }
+    { id: 'hp', icon: 'heart', title: 'Vigor',
+      desc: level => G.I18n.f('+{x} de vida máxima (y la recupera).', (20 + 5 * level).toLocaleString(G.I18n.locale)),
+      apply: (pl, level = 1) => pl.addMaxHp(20 + 5 * level) },
+    { id: 'atk', icon: 'fist', title: 'Potencia',
+      desc: level => G.I18n.f('+{x}% de daño con todos los movimientos.', 10 + 5 * level),
+      apply: (pl, level = 1) => pl.atkMul *= 1.10 + 0.05 * level, max: 40 },
+    { id: 'spd', icon: 'boot', title: 'Carrera',
+      desc: level => G.I18n.f('+{x}% de velocidad de movimiento.', 7 + 2 * level),
+      apply: (pl, level = 1) => pl.spdMul *= 1.07 + 0.02 * level, max: 8 },
+    { id: 'cd', icon: 'clock', title: 'Reflejos',
+      desc: level => G.I18n.f('-{x}% de recarga en todos los movimientos.', 8 + 2 * level),
+      apply: (pl, level = 1) => pl.cdMul *= 0.92 - 0.02 * level, max: 10 },
+    { id: 'def', icon: 'shield', title: 'Coraza',
+      desc: level => G.I18n.f('+{x}% de reducción de daño recibido.', 6 + 3 * level),
+      apply: (pl, level = 1) => pl.dmgReduce = Math.min(0.7, pl.dmgReduce + 0.06 + 0.03 * level), max: 12 },
+    { id: 'rgn', icon: 'sprout', title: 'Síntesis',
+      desc: level => G.I18n.f('+{x} de vida regenerada por segundo.', (0.9 + 0.3 * level).toLocaleString(G.I18n.locale)),
+      apply: (pl, level = 1) => pl.regenFlat += 0.9 + 0.3 * level },
+    { id: 'mag', icon: 'magnet', title: 'Imán',
+      desc: level => G.I18n.f('+{x}% de radio de recogida de experiencia.', 30 + 5 * level),
+      apply: (pl, level = 1) => pl.magnet *= 1.30 + 0.05 * level, max: 6 },
+    { id: 'xp', icon: 'book', title: 'Aprendizaje',
+      desc: level => G.I18n.f('+{x}% de experiencia ganada.', 12 + 3 * level),
+      apply: (pl, level = 1) => pl.xpMul *= 1.12 + 0.03 * level, max: 8 },
+    { id: 'heal', icon: 'berry', title: 'Baya Zidra',
+      desc: level => G.I18n.f('Recupera el {x}% de tu vida ahora mismo.', 45 + 5 * level),
+      apply: (pl, level = 1) => pl.heal(pl.maxHp * (0.45 + 0.05 * level)) }
   ];
 
   const RARITIES = [
-    { label: 'Común', color: '#f4f8ff', multiplier: 1, chance: 62 },
-    { label: 'Poco común', color: '#5fe08a', multiplier: 1.5, chance: 22 },
-    { label: 'Rara', color: '#4fb4ff', multiplier: 2, chance: 10 },
-    { label: 'Épica', color: '#c47bff', multiplier: 3, chance: 5 },
-    { label: 'Legendaria', color: '#ffd23f', multiplier: 5, chance: 1 }
+    { label: 'Común', color: '#f4f8ff', level: 0, chance: 35 },
+    { label: 'Poco común', color: '#5fe08a', level: 1, chance: 30 },
+    { label: 'Rara', color: '#4fb4ff', level: 2, chance: 20 },
+    { label: 'Épica', color: '#c47bff', level: 3, chance: 10 },
+    { label: 'Legendaria', color: '#ffd23f', level: 4, chance: 5 }
   ];
 
   function rollRarity() {
@@ -160,8 +169,8 @@ G.LevelUp = (() => {
         type: 'stat', key: 'stat:' + s.id,
         icon: s.icon, color: rarity.color,
         tag: G.T(rarity.label) + (evoFor ? ' · ' + G.T('Evoluciona') + ' ' + G.T(evoFor.name, 'move') : ''),
-        title: s.title, desc: s.desc + (rarity.multiplier > 1 ? ' ×' + rarity.multiplier : ''),
-        apply: p => { s.apply(p, rarity.multiplier); p.statsTaken[s.id] = (p.statsTaken[s.id] || 0) + 1; }
+        title: s.title, desc: s.desc(rarity.level),
+        apply: p => { s.apply(p, rarity.level); p.statsTaken[s.id] = (p.statsTaken[s.id] || 0) + 1; }
       });
     }
 

@@ -279,7 +279,8 @@ G.MenuUI = (() => {
   function dexCell(p) {
     const s = G.DB.save;
     const own = !!s.owned[p.dex], sh = !!(s.shiny && s.shiny[p.dex]);
-    const mega = !!(G.MEGA_FORMS[p.dex] && G.MEGA_FORMS[p.dex].length);
+    const forms = G.MEGA_FORMS && G.MEGA_FORMS[p.dex];
+    const mega = !!(forms && forms.length);
     const cell = document.createElement('div');
     cell.className = 'cell' + (own ? '' : ' locked') + (p.dex === dexSel ? ' on' : '');
     cell.dataset.pad = '1';

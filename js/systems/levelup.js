@@ -73,12 +73,12 @@ G.LevelUp = (() => {
     const mon = G.T(pl.mon.name);
     return {
       w: 40, type: 'mega', key: 'mega:' + form.id,
-      icon: 'evolve', color: '#ffc400', tag: G.T('UNIQUE'),
+      icon: 'mega', color: '#ffc400', tag: G.T('UNIQUE'),
       title: form.id === 'primal' ? 'Primal ' + mon : 'Mega ' + mon + (suffix ? ' ' + suffix : ''),
       desc: G.T('Evolve Mega: +20% attack and +20% maximum health.'),
       apply: p => {
         if (!p.megaEvolve(form.id)) return;
-        G.FX.evolve(p.x, p.y, p.r, p.bodyH);
+        G.FX.megaEvolve(p.x, p.y, p.r, p.bodyH);
         G.Audio.sfx('legend');
         if (G.Coop.active) G.Coop.mega(p, form.id);
       }

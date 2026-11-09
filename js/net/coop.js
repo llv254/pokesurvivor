@@ -405,7 +405,7 @@ G.Coop = (() => {
           break;
         case 'mg':
           if (m.pl.megaEvolve(ev[1])) {
-            G.FX.evolve(m.pl.x, m.pl.y, m.pl.r, m.pl.bodyH);
+            G.FX.megaEvolve(m.pl.x, m.pl.y, m.pl.r, m.pl.bodyH);
             emit(['mg', from, ev[1]], from);
           }
           break;

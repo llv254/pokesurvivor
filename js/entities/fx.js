@@ -87,7 +87,7 @@ G.FX = (() => {
     rings.push({ x, y, r0, r1, color, life, t: 0, width });
   }
 
-  function evolve(x, y, radius, height, color = '#ffd23f') {
+  function megaEvolve(x, y, radius, height, color = '#ffd23f') {
     const cy = y - height * 0.5;
     transforms.push({ x, y, r: radius, h: height, color, t: 0, life: 1.25, seed: Math.random() * 6.2832 });
     ring(x, y, radius * 0.35, radius * 5.2, color, 1.05, 6);
@@ -333,6 +333,6 @@ G.FX = (() => {
     }
   }
 
-  return { clear, px, burst, spark, sp, twinkle, trail, dmgText, ring, evolve, slash, beam, update, draw,
+  return { clear, px, burst, spark, sp, twinkle, trail, dmgText, ring, megaEvolve, slash, beam, update, draw,
            get count() { return parts.length + sprites.length + texts.length + transforms.length; } };
 })();

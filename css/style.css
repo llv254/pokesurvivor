@@ -776,14 +776,18 @@ a.plink:hover { color: var(--gold); }
 }
 .ach-pop b { display: block; color: var(--gold); }
 .ach-pop small { color: var(--muted); }
-.card.evo {
-  --evo-rainbow: linear-gradient(90deg, #ff5364, #ff9a32, #ffe14d, #62d96b, #39a8ff, #5d62ff, #bd66ff);
+.card.evo { border-color: var(--gold); background: linear-gradient(90deg, rgba(255,210,63,.18), rgba(255,210,63,.04)); }
+.card.evo .nm { color: var(--gold); }
+
+.card.mega {
+  --mega-rainbow: linear-gradient(90deg, #ff5364, #ff9a32, #ffe14d, #62d96b, #39a8ff, #5d62ff, #bd66ff);
   border-color: transparent;
-  background: linear-gradient(90deg, rgba(12,18,34,.68), rgba(12,18,34,.42)) padding-box, var(--evo-rainbow) border-box;
+  background: linear-gradient(90deg, rgba(12,18,34,.68), rgba(12,18,34,.42)) padding-box, var(--mega-rainbow) border-box;
 }
-.card.evo:hover { background: linear-gradient(90deg, rgba(30,40,64,.78), rgba(30,40,64,.58)) padding-box, var(--evo-rainbow) border-box; }
-.card.evo .nm { color: #fff3ae; }
-.card.evo .evo-tag { background: var(--evo-rainbow); color: #17131a; }
+.card.mega:hover { background: linear-gradient(90deg, rgba(30,40,64,.78), rgba(30,40,64,.58)) padding-box, var(--mega-rainbow) border-box; }
+.card.mega .nm { color: #fff3ae; }
+.card.mega .mega-tag { background: var(--mega-rainbow); color: #17131a; }
+
 /* Vínculo (premio de los legendarios): rosa */
 .bond-title { color: #ff8ad8; }
 .card.bond { border-color: #ff8ad8; background: linear-gradient(90deg, rgba(255,138,216,.18), rgba(255,138,216,.04)); }

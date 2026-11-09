@@ -138,7 +138,7 @@ G.Icons = (() => {
       'kbddddwwlwwdddyk',
       '.kcddddwdwlddyk.',
       '.kcddddwlwdddyk.',
-      '..kccddwlwddgyk.',
+      '..kccddwlddgyk..',
       '...kkcgggggkk...',
       '.....kkkkkk.....'
     ] },

@@ -95,7 +95,7 @@ G.Player = class Player {
 
   megaEvolve(id) {
     const form = (G.MEGA_FORMS[this.dex] || []).find(x => x.id === id);
-    if (!form || this.megaForm || G.Game.st.time < 1) return false;
+    if (!form || this.megaForm || G.Game.st.time < 900) return false;
     const old = this.mon, next = Object.assign({}, old, form.stats, { dex: this.dex, nature: old.nature });
     const nature = old.nature && G.NATURE_BY[old.nature];
     if (nature) {

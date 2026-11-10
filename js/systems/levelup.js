@@ -67,7 +67,7 @@ G.LevelUp = (() => {
   function megaCard(pl) {
     const time = G.Game && G.Game.st ? G.Game.st.time : 0;
     const forms = G.MEGA_FORMS && G.MEGA_FORMS[pl.dex];
-    if (time < 1 || pl.megaForm || !forms || !forms.length || Math.random() >= 0.5) return null;
+    if (time < 900 || pl.megaForm || !forms || !forms.length || Math.random() >= 0.5) return null;
     const form = G.U.pick(forms);
     const suffix = form.id.replace(/^mega-?/, '').toUpperCase();
     const mon = G.T(pl.mon.name);
